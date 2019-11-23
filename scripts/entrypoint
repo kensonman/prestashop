@@ -24,6 +24,17 @@ ctl()
    supervisorctl -c /scripts/supervisord.conf ${*:2}
 }
 
+finalizes()
+{
+   echo "Finalizes the installation..."
+   ADMIN=`find /usr/share/nginx/html -type d -regex ".*admin[0-9a-z]*\$" -maxdepth 1`
+   ADMIN=`basename $ADMIN`
+   echo "  Rewrite the admin directory to $ADMIN..."
+   sed -i "s|# ADMIN-REWRITE|location /$ADMIN/{\n\t\tif (\!-e \$request_filename) {\n\t\t\trewrite ^/.*\$ /$ADMIN/index.php last;\n\t\t}\n\t}|g" /scripts/nginx.conf
+   echo "  Removing the installation directory..."
+   rm -rf /usr/share/nginx/html/install
+}
+
 printhelp()
 {
    echo "This entrypoint support belows commands:"
@@ -35,6 +46,8 @@ printhelp()
    echo "    Usage: status"
    echo "  ctl              - Execute the [supervisorctl command](http://supervisord.org/running.html#running-supervisorctl);"
    echo "    Usage: ctl <action> <program>"
+   echo "  finalizes        - Finalizes the installation;"
+   echo "    Usage: finializes"
    echo "  help             - Print this help message"
    echo "    Usage: help"
 }
@@ -52,6 +65,9 @@ case "$1" in
       ;;
    status)
       ctl "status"
+      ;;
+   finalizes)
+      finalizes
       ;;
    help)
       printhelp
