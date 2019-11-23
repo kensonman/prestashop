@@ -1,0 +1,62 @@
+#!/bin/bash
+#
+# The entrypoint of the container.
+
+USERID=${UID:-1000}
+
+# Init the django environments
+init()
+{
+   echo "Initializes the envirnonment..."
+}
+
+run()
+{
+   init
+   echo "Going to execute the server ...."
+   /usr/bin/supervisord -c /scripts/supervisord.conf
+}
+
+
+ctl()
+{
+   echo "Going to execute the supervisorctl command: \"$@\"..."
+   supervisorctl -c /scripts/supervisord.conf ${*:2}
+}
+
+printhelp()
+{
+   echo "This entrypoint support belows commands:"
+   echo "  init             - Init the Django environment and install the dependencies;"
+   echo "    Usage: init"
+   echo "  run              - Startup the service with supervisor daemon;"
+   echo "    Usage: run"
+   echo "  status           - Showing the status of supervisord;"
+   echo "    Usage: status"
+   echo "  ctl              - Execute the [supervisorctl command](http://supervisord.org/running.html#running-supervisorctl);"
+   echo "    Usage: ctl <action> <program>"
+   echo "  help             - Print this help message"
+   echo "    Usage: help"
+}
+
+
+case "$1" in
+   init)
+      init "$@"
+      ;;
+   run)
+      run "$@"
+      ;;
+   ctl)
+      ctl "$@"
+      ;;
+   status)
+      ctl "status"
+      ;;
+   help)
+      printhelp
+      ;;
+   *)
+      echo "Executing runtime command \"$@\"..."
+      exec "$@"
+esac
