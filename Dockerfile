@@ -13,7 +13,9 @@ RUN echo ">>   Installing dependancies..." \
  && mkdir -p /var/log/supervisor \
  && apk update \
  && apk upgrade \
- && apk add --update --no-cache bash build-base linux-headers vim nginx php7 php7-fpm php7-opcache php7-gd php7-mysqli php7-zlib php7-curl php7-dom php7-fileinfo php7-intl supervisor \
+ && apk add --update --no-cache bash build-base linux-headers vim nginx supervisor \
+ php7 php7-fpm php7-opcache php7-gd php7-mysqli php7-zlib php7-curl php7-dom php7-fileinfo php7-intl php7-json php7-zip php7-simplexml php7-tokenizer php7-session \
+ php7-pdo php7-pdo_mysql php7-iconv php7-posix \
  && echo ">>   Configurating ..." \
  && adduser -S theuser \
  && adduser theuser www-data \

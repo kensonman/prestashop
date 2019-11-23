@@ -32,7 +32,12 @@ docker run -d --name some-prestashop --network prestashop-net -p 8000:80 some-pr
 
 8. Open the [localhost:8000](http://localhost:8000) and finish the installation;
 
-9. [Optional] Stop the Prestashop container and commit it;
+9. Delete the install folder in image;
+```bash
+docker exec -it some-prestashop rm -rf /usr/share/nginx/html/install
+```
+
+10. [Optional] Stop the Prestashop container and commit it;
 ```bash
 docker stop some-prestashop
 docker commit some-prestashop myregistry/my-prestashop:latest
